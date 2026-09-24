@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.suo
+TestResults/
+.DS_Store
+
+# Interviewer-only material (reference solutions). Never commit.
+tmp/

@@ -1,0 +1,10 @@
+namespace AutoMHatic.Assessment.Tests;
+
+internal sealed class ManualTimeProvider(DateTimeOffset now) : TimeProvider
+{
+    private DateTimeOffset _now = now;
+
+    public override DateTimeOffset GetUtcNow() => _now;
+
+    public void Advance(TimeSpan delta) => _now += delta;
+}
