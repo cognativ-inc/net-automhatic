@@ -120,13 +120,18 @@ public sealed class LoanApplicationTests
     }
 
     [Fact]
-    public void C10_Unknown_statuses_are_rejected_as_bad_arguments()
+    public void C10_Unknown_statuses_are_rejected()
     {
         var application = NewApplication();
         var unknown = (ApplicationStatus)999;
 
         Assert.False(application.CanMoveTo(unknown));
-        Assert.Throws<ArgumentOutOfRangeException>(() => application.MoveTo(unknown));
+        var error = Assert.ThrowsAny<Exception>(() => application.MoveTo(unknown));
+        Assert.True(
+            error is ArgumentException or InvalidOperationException,
+            $"Expected an ArgumentException or InvalidOperationException, got {error.GetType().Name}.");
+        Assert.Equal(Received, application.Status);
+        Assert.Empty(application.History);
     }
 
     [Fact]
@@ -155,14 +160,13 @@ public sealed class LoanApplicationTests
         var application = NewApplication();
         application.MoveTo(Processing);
 
-        if (application.History is ICollection<StatusChange> collection)
-        {
-            Assert.True(collection.IsReadOnly);
-        }
-
+        // Returning a read-only view or a fresh copy are both fine. What matters is that
+        // tampering with what History returns never changes the application's record.
         if (application.History is IList<StatusChange> list)
         {
-            Assert.ThrowsAny<NotSupportedException>(() => list[0] = new StatusChange(Received, Cancelled, Start));
+            TryToTamper(() => list[0] = new StatusChange(Received, Cancelled, Start));
+            TryToTamper(() => list.Add(new StatusChange(Processing, Cancelled, Start)));
+            TryToTamper(list.Clear);
         }
 
         Assert.Equal(new StatusChange(Received, Processing, Start), Assert.Single(application.History));
@@ -203,6 +207,18 @@ public sealed class LoanApplicationTests
     }
 
     private LoanApplication NewApplication() => new(Guid.NewGuid(), _clock);
+
+    private static void TryToTamper(Action tamper)
+    {
+        try
+        {
+            tamper();
+        }
+        catch (NotSupportedException)
+        {
+            // Read-only collections refuse the change, which is fine.
+        }
+    }
 
     private static void MoveThrough(LoanApplication application, params ApplicationStatus[] statuses)
     {

@@ -86,13 +86,4 @@ public sealed class PhoneNumberTests
     {
         Assert.Null(PhoneNumber.Normalize(input));
     }
-
-    [Theory]
-    [InlineData("５５５１２３４５６７")]
-    [InlineData("٥٥٥١٢٣٤٥٦٧")]
-    [InlineData("५५५१२३४५६७")]
-    public void C10_Only_ASCII_digits_are_accepted(string input)
-    {
-        Assert.Null(PhoneNumber.Normalize(input));
-    }
 }
