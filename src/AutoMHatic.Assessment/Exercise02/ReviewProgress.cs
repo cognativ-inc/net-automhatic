@@ -17,7 +17,9 @@
  * ---------
  * Implement ReviewProgress.Calculate. It returns an integer from 0 to 100.
  *
+ * - Throw ArgumentNullException when fields is null.
  * - Only required fields affect progress.
+ * - A value that is empty or only whitespace counts as missing.
  * - Co-borrower fields are required only when the application has a
  *   co-borrower.
  * - When nothing is required, nothing blocks submission.

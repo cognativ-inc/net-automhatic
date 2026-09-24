@@ -25,12 +25,15 @@
  * Implement EncompassSubmitter.SubmitAsync. It returns the Encompass loan ID
  * for the application.
  *
+ * - The constructor throws ArgumentNullException for a null client.
+ *   SubmitAsync throws ArgumentException for an empty application ID.
  * - Encompass must never create two loan files for the same application.
  * - Callers that submit the same application at the same time get the same
  *   outcome.
  * - Submissions for different applications must not wait for each other.
  * - The cancellation token means that this caller stops waiting. It must not
- *   abort work that other callers depend on.
+ *   abort work that other callers depend on. A caller whose token is already
+ *   cancelled gets an OperationCanceledException and never reaches Encompass.
  *
  * You may add private members and helper types. Keep the public surface.
  *

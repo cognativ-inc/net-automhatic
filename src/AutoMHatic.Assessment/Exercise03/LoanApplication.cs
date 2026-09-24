@@ -25,9 +25,12 @@
  * ---------
  * Implement LoanApplication.
  *
+ * - The constructor throws ArgumentException for an empty ID and
+ *   ArgumentNullException for a null TimeProvider.
  * - A new application starts in Received with an empty history.
- * - MoveTo applies a transition. A transition that is not allowed must leave the
- *   application untouched.
+ * - MoveTo applies a transition. A transition that is not allowed, including an
+ *   unknown status, throws InvalidOperationException and leaves the application
+ *   untouched.
  * - CanMoveTo answers whether MoveTo would succeed, without changing anything.
  * - History exposes every change in the order it happened. Callers must not be
  *   able to rewrite it.

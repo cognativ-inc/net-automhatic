@@ -29,6 +29,11 @@
  * Implement ApplicationQueue.Query. The request and result types are given.
  * You may add members and helper types.
  *
+ * - Throw ArgumentNullException when items or query is null.
+ * - Throw ArgumentOutOfRangeException when Page is below 1, or PageSize is below
+ *   1 or above MaxPageSize.
+ * - A page past the end is empty, but it still reports the totals.
+ *
  * Tests: tests/AutoMHatic.Assessment.Tests/Exercise04/ApplicationQueueTests.cs
  */
 
